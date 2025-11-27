@@ -29,11 +29,62 @@ Create a flake.nix:
 ```
 
 ```
-shellHook = ''
-  export LANG=${if builtins.hasAttr "en_US.UTF-8" builtins ? "en_US.UTF-8" : "C.UTF-8"}
-  export LC_ALL=$LANG
-  echo "Locale set to $LANG"
-'';
+{
+  description = "VORTEX Python 3.14 dev shell with locale guard and async overlays";
+
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+  outputs = { self, nixpkgs }: let
+    system = "x86_64-linux";
+    pkgs = import nixpkgs {
+      inherit system;
+      overlays = [
+        # Optional: override zstandard version
+        (final: prev: {
+          python314 = prev.python314.override {
+            packageOverrides = pyFinal: pyPrev: {
+              zstandard = pyPrev.zstandard.overridePythonAttrs (old: {
+                version = "0.22.0";
+              });
+            };
+          };
+        })
+      ];
+    };
+  in {
+    devShell.${system} = pkgs.mkShell {
+      buildInputs = [
+        pkgs.python314
+        pkgs.python314Packages.virtualenv
+        pkgs.python314Packages.cython
+        pkgs.python314Packages.zstandard
+        pkgs.python314Packages.uvloop
+        pkgs.python314Packages.rich
+        pkgs.zlib
+        pkgs.openssl
+        pkgs.libffi
+      ];
+
+      shellHook = ''
+        # Locale guard: fallback to C.UTF-8 if en_US.UTF-8 is missing
+        if ! locale -a | grep -q 'en_US.UTF-8'; then
+          export LANG=C.UTF-8
+          export LC_ALL=C.UTF-8
+          echo "⚠️ Locale en_US.UTF-8 not found, falling back to C.UTF-8"
+        else
+          export LANG=en_US.UTF-8
+          export LC_ALL=en_US.UTF-8
+          echo "✅ Locale set to en_US.UTF-8"
+        fi
+
+        echo "🐍 Python 3.14 dev shell activated"
+        echo "📦 Packages: cython, zstandard, uvloop, rich"
+        echo "🔒 Isolation: nix store + virtualenv ready"
+      '';
+    };
+  };
+}
+
 ```
 
 Fix
