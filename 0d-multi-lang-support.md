@@ -1,27 +1,3 @@
-```mermaid
-flowchart TD
-    A[flake.nix]
-    A --> B[inputs]
-    B --> B1[nixpkgs → github:NixOS/nixpkgs]
-    B --> B2[system → x86_64-linux]
-
-    A --> C[outputs]
-    C --> D[devShell.x86_64-linux]
-    D --> E[pkgs.mkShell]
-    E --> F[buildInputs]
-    F --> F1[python314]
-    F --> F2[cython]
-    F --> F3[virtualenv]
-    F --> F4[zlib, openssl, libffi]
-
-    E --> G[shellHook]
-    G --> H["echo Welcome to py314 shell"]
-    G --> I["source ./venv314/bin/activate"]
-
-    A --> J[overlays (optional)]
-    J --> J1[override zstandard version]
-
-```
 
 ```
 Perfect — you’re already deep in the Nix build flow for Python 3.14, and the image confirms that python3.14-cython-3.1.4 is building successfully. That means your flake is resolving inputs correctly, and the environment is assembling as expected.
@@ -103,5 +79,47 @@ I can sketch:
 - Build inputs
 - Activation flow
 Just say the word and I’ll scaffold it visually.
+
+```
+
+
+```
+Here’s a Mermaid diagram overlay showing the structure of your Python 3.14 Nix flake — complete with inputs, overlays, shell hooks, and build inputs. This mirrors your modular lab style and sets the stage for polyglot expansion:
+flowchart TD
+    A[flake.nix]
+    A --> B[inputs]
+    B --> B1[nixpkgs → github:NixOS/nixpkgs]
+    B --> B2[system → x86_64-linux]
+
+    A --> C[outputs]
+    C --> D[devShell.x86_64-linux]
+    D --> E[pkgs.mkShell]
+    E --> F[buildInputs]
+    F --> F1[python314]
+    F --> F2[cython]
+    F --> F3[virtualenv]
+    F --> F4[zlib, openssl, libffi]
+
+    E --> G[shellHook]
+    G --> H["echo Welcome to py314 shell"]
+    G --> I["source ./venv314/bin/activate"]
+
+    A --> J[overlays (optional)]
+    J --> J1[override zstandard version]
+
+
+
+🔍 How to Read This
+- Inputs: Pull in nixpkgs and define the target system.
+- Outputs: Define a devShell using pkgs.mkShell.
+- Build Inputs: Include Python 3.14, Cython, and supporting libraries.
+- Shell Hook: Runs setup commands when the shell activates.
+- Overlays: Optional customization for package versions or patches.
+
+This structure is perfect for your blueprint-driven lab branding — each node is a modular layer, and you can expand it with:
+- Polyglot overlays: Add nodejs, go, rust inputs.
+- CI caching hooks: Inject wheel caching or flake.lock visualizers.
+- Naming conventions: Brand the shell as VORTEX, STEALTH, or PYRITE depending on its role.
+👉 Want to scaffold a multi-language flake next, or visualize how this plugs into your Temporal orchestration and CI/CD pipelines? I’m ready to riff.
 
 ```
