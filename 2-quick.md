@@ -1,6 +1,7 @@
 Here’s a minimal flake.nix that boots up Python 3.14 instantly — no overlays, no extras, just the essentials to get you into a working shell fast:
 
 ⚡️ Barebones Python 3.14 Flake
+```
 {
   description = "Minimal Python 3.14 shell";
 
@@ -24,19 +25,21 @@ Here’s a minimal flake.nix that boots up Python 3.14 instantly — no overlays
     };
   };
 }
-
+```
 
 
 🧪 Quickstart
+```
 nix --extra-experimental-features nix-command \
     --extra-experimental-features flakes \
     develop
-
+```
 
 Then:
+```
 python3.14 -m venv venv314
 source venv314/bin/activate
-
+```
 
 
 🔧 What You Can Add Later
@@ -58,6 +61,7 @@ Your flake.lock is the manifest of all pinned inputs (like nixpkgs commits, narH
 - Hashes (narHash, rev)
 - Update flow (when you run nix flake update)
 Mermaid Diagram: Flake.lock Flow
+```mermaid
 flowchart TD
     A[flake.nix] --> B[flake.lock]
     B --> C[nixpkgs commit + narHash]
@@ -66,30 +70,35 @@ flowchart TD
     C --> F[Python 3.14 buildInputs]
     D --> G[Custom packages: zstandard, uvloop]
     E --> H[DevShell activation]
-
+```
 
 
 ⚡️ CI/CD Caching Strategy
 1. Prebuild the devShell
-nix build .#devShells.x86_64-linux.default
 
+```
+nix build .#devShells.x86_64-linux.default
+```
 
 This caches the entire shell closure so nix develop is instant.
 2. Use nix-store --export for portability
 Export the closure:
+```
 nix-store --export $(nix-store -qR result) > py314.nixpkg
-
+```
 
 Then import on CI runners:
+```
 nix-store --import < py314.nixpkg
-
+```
 
 3. Pin nixpkgs commit
 Keep your flake.lock under version control. CI will always use the same narHash → reproducible builds.
 4. Cache wheels inside venv
 Inside your shell:
+```
 pip wheel -r requirements.txt -w /tmp/wheelhouse
-
+```
 
 Then reuse /tmp/wheelhouse across jobs.
 
