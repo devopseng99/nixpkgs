@@ -6,19 +6,26 @@ curl -L https://nixos.org/nix/install | sh
 Create a flake.nix:
 ```
 {
-  description = "Python 3.14 isolated env";
+  description = "Python 3.14 dev shell";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-  outputs = { self, nixpkgs }: {
-    devShell.x86_64-linux = nixpkgs.lib.mkShell {
+  outputs = { self, nixpkgs }: let
+    system = "x86_64-linux";
+    pkgs = import nixpkgs { inherit system; };
+  in {
+    devShell.${system} = pkgs.mkShell {
       buildInputs = [
-        nixpkgs.python314
-        nixpkgs.python314Packages.virtualenv
+        pkgs.python314
+        pkgs.python314Packages.virtualenv
+        pkgs.zlib
+        pkgs.openssl
+        pkgs.libffi
       ];
     };
   };
 }
+
 ```
 
 Enter the shell:
