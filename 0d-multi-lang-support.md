@@ -1,3 +1,28 @@
+```mermaid
+flowchart TD
+    A[flake.nix]
+    A --> B[inputs]
+    B --> B1[nixpkgs → github:NixOS/nixpkgs]
+    B --> B2[system → x86_64-linux]
+
+    A --> C[outputs]
+    C --> D[devShell.x86_64-linux]
+    D --> E[pkgs.mkShell]
+    E --> F[buildInputs]
+    F --> F1[python314]
+    F --> F2[cython]
+    F --> F3[virtualenv]
+    F --> F4[zlib, openssl, libffi]
+
+    E --> G[shellHook]
+    G --> H["echo Welcome to py314 shell"]
+    G --> I["source ./venv314/bin/activate"]
+
+    A --> J[overlays (optional)]
+    J --> J1[override zstandard version]
+
+```
+
 ```
 Perfect — you’re already deep in the Nix build flow for Python 3.14, and the image confirms that python3.14-cython-3.1.4 is building successfully. That means your flake is resolving inputs correctly, and the environment is assembling as expected.
 Let’s address the locale warning and then scaffold your next steps:
