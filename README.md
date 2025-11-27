@@ -36,10 +36,11 @@ bash Miniconda3-latest-Linux-x86_64.sh
 ```
 
 Create a Python 3.14 environment:
-``
+```
 conda create -n py314 python=3.14
 conda activate py314
 ```
+
 Install extras:
 ```
 conda install zstandard uvloop rich
