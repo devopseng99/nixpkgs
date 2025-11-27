@@ -28,6 +28,14 @@ Create a flake.nix:
 
 ```
 
+```
+shellHook = ''
+  export LANG=${if builtins.hasAttr "en_US.UTF-8" builtins ? "en_US.UTF-8" : "C.UTF-8"}
+  export LC_ALL=$LANG
+  echo "Locale set to $LANG"
+'';
+```
+
 Fix
 ```
 sudo localedef -i en_US -f UTF-8 en_US.UTF-8
@@ -97,7 +105,7 @@ buildInputs = [
 ```
 
 
-```mermaid
+```
 flowchart TD
     A[flake.nix]
     A --> B[inputs]
